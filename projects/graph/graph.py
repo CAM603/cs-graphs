@@ -32,30 +32,85 @@ class Graph:
         """
         return self.vertices[vertex_id]
 
+    # def bft(self, starting_vertex):
+    #     """
+    #     Print each vertex in breadth-first order
+    #     beginning from starting_vertex.
+    #     """
+    #     # initialize queue
+    #     q = Queue()
+    #     # create set to store visited vertices
+    #     visited = set()
+    #     # add starting_vertex to queue
+    #     q.enqueue(starting_vertex)
+    #     # while queue is not empty
+    #     while q.size() > 0:
+    #         # dequeu starting_vertex
+    #         v = q.dequeue()
+    #         # if the vertex has not been visited
+    #         if v not in visited:
+    #             # visit it
+    #             print(v)
+    #             # mark as visited
+    #             visited.add(v)
+    #             # add neighbors to queue
+    #             for next_vert in self.get_neighbors(v):
+    #                 q.enqueue(next_vert)
+
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        # initialize queue
+        # Create a queue and enqueue starting_vertex
         q = Queue()
+        q.enqueue([starting_vertex])
         # create set to store visited vertices
         visited = set()
-        # add starting_vertex to queue
-        q.enqueue(starting_vertex)
         # while queue is not empty
         while q.size() > 0:
-            # dequeu starting_vertex
-            v = q.dequeue()
-            # if the vertex has not been visited
-            if v not in visited:
-                # visit it
-                print(v)
+            # dequeu/pop starting_vertex
+            path = q.dequeue()
+            print(f'Old {path}')
+            print(path[-1])
+            # if not visited
+            if path[-1] not in visited:
+                # DO THE THING
+                print(path[-1])
                 # mark as visited
-                visited.add(v)
-                # add neighbors to queue
-                for next_vert in self.get_neighbors(v):
-                    q.enqueue(next_vert)
+                visited.add(path[-1])
+                # enqueue all neighbors
+                for next_vert in self.get_neighbors(path[-1]):
+                    # makes a copy
+                    new_path = list(path)
+                    new_path.append(next_vert)
+                    print(f'New {new_path}')
+                    q.enqueue(new_path)
+
+    # def dft(self, starting_vertex):
+    #     """
+    #     Print each vertex in depth-first order
+    #     beginning from starting_vertex.
+    #     """
+    #     # initialize stack
+    #     s = Stack()
+    #     # create set to store visited vertices
+    #     visited = set()
+    #     # add starting_vertex to stack
+    #     s.push(starting_vertex)
+    #     # while stack is not empty
+    #     while s.size() > 0:
+    #         # pop starting_vertex
+    #         v = s.pop()
+    #         # if the vertex has not been visited
+    #         if v not in visited:
+    #             # visit it
+    #             print(v)
+    #             # mark as visited
+    #             visited.add(v)
+    #             # add neighbors to stack
+    #             for next_vert in self.get_neighbors(v):
+    #                 s.push(next_vert)
 
     def dft(self, starting_vertex):
         """
@@ -64,48 +119,70 @@ class Graph:
         """
         # initialize stack
         s = Stack()
+        # add starting_vertex to stack
+        s.push([starting_vertex])
         # create set to store visited vertices
         visited = set()
-        # add starting_vertex to stack
-        s.push(starting_vertex)
         # while stack is not empty
         while s.size() > 0:
             # pop starting_vertex
-            v = s.pop()
-            # if the vertex has not been visited
-            if v not in visited:
-                # visit it
-                print(v)
+            path = s.pop()
+            # if not visited
+            if path[-1] not in visited:
+                # DO THE THING
+                print(path[-1])
                 # mark as visited
-                visited.add(v)
-                # add neighbors to stack
-                for next_vert in self.get_neighbors(v):
-                    s.push(next_vert)
+                visited.add(path[-1])
+                # enqueue all neighbors
+                for next_vert in self.get_neighbors(path[-1]):
+                    # makes a copy
+                    new_path = list(path)
+                    new_path.append(next_vert)
+                    s.push(new_path)
 
-    def dft_recursive(self, starting_vertex):
+    # def dft_recursive(self, starting_vertex):
+    #     """
+    #     Print each vertex in depth-first order
+    #     beginning from starting_vertex.
+
+    #     This should be done using recursion.
+    #     """
+    #     # create set to store visited vertices
+    #     visited = set()
+    #     # create helper function that accepts a vertex
+
+    #     def dft(vertex):
+    #         # base case if there is no vertex
+    #         if vertex is None:
+    #             return
+    #         else:
+    #             visited.add(vertex)
+    #             print(vertex)
+    #             for neighbor in self.get_neighbors(vertex):
+    #                 if neighbor not in visited:
+    #                     dft(neighbor)
+    #     dft(starting_vertex)
+
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        # create set to store visited vertices
-        visited = set()
-        # create ref to vertices
-        # get_neighbors = self.get_neighbors
-        # create helper function that accepts a vertex
+        # Initial case
+        if visited is None:
+            visited = set()
+        # Base case: when we have no more neighbors
 
-        def dft(vertex):
-            # base case if there is no vertex
-            if vertex is None:
-                return
-            else:
-                visited.add(vertex)
-                print(vertex)
-                for neighbor in self.get_neighbors(vertex):
-                    if neighbor not in visited:
-                        dft(neighbor)
-        dft(starting_vertex)
+        # track visited nodes
+        visited.add(starting_vertex)
+        print(starting_vertex)
+
+        # call the function recursively - on unvisited neighbors
+        for neighbor in self.get_neighbors(starting_vertex):
+            if neighbor not in visited:
+                self.dft_recursive(neighbor, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -225,7 +302,7 @@ if __name__ == '__main__':
     Should print:
         {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
     '''
-    print(graph.vertices)
+    # print(graph.vertices)
 
     '''
     Valid BFT paths:
@@ -252,7 +329,7 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     # graph.dft(1)
-    # graph.dft_recursive(1)
+    graph.dft_recursive(1)
 
     '''
     Valid BFS path:
@@ -265,5 +342,5 @@ if __name__ == '__main__':
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    # print(graph.dfs(1, 6))
+    # print(graph.dfs_recursive(1, 6))

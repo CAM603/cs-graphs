@@ -1,6 +1,11 @@
+from util import Queue
+import random
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -40,13 +45,50 @@ class SocialGraph:
         """
         # Reset graph
         self.last_id = 0
-        self.users = {}
-        self.friendships = {}
-        # !!!! IMPLEMENT ME
+        self.users = {}  # Nodes
+        self.friendships = {}  # Edges
+        count = 0
 
         # Add users
+        for i in range(0, num_users):
+            self.add_user(f"User {i}")
 
         # Create friendships
+        possible_friendships = []
+
+        # Don't add duplicate combinations by ensuring the first number is smaller than the second
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+        # Shuffle them
+        random.shuffle(possible_friendships)
+
+        # Create friendships for the first X pairs of the list
+        # X is determined by the formula: num_users * avg_friendships // 2
+        # Need to divide by 2 since each add_friendship() creates 2 friendships
+        for i in range(num_users * avg_friendships // 2):
+            # Set up those friendships
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
+            count += 1
+        return count
+
+    def bfs(self, starting_friend, destination_friend):
+        q = Queue()
+        q.enqueue([starting_friend])
+
+        visited = set()
+
+        while q.size() > 0:
+            path = q.dequeue()
+            if path[-1] not in visited:
+                if path[-1] == destination_friend:
+                    return path
+                visited.add(path[-1])
+                for friend in self.friendships[path[-1]]:
+                    new_path = list(path)
+                    new_path.append(friend)
+                    q.enqueue(new_path)
 
     def get_all_social_paths(self, user_id):
         """
@@ -58,7 +100,14 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        for user in self.users:
+            # for every user
+            # find a path from the user_id to the user
+            # if there is a path, add to the visited
+            path = self.bfs(user_id, user)
+            if path:
+                visited[user] = path
+
         return visited
 
 

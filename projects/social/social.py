@@ -111,9 +111,45 @@ class SocialGraph:
         return visited
 
 
-if __name__ == '__main__':
-    sg = SocialGraph()
-    sg.populate_graph(10, 2)
-    print(sg.friendships)
-    connections = sg.get_all_social_paths(1)
-    print(connections)
+# if __name__ == '__main__':
+#     sg = SocialGraph()
+#     sg.populate_graph(1000, 5)
+#     print(sg.friendships)
+#     connections = sg.get_all_social_paths(1)
+#     print(connections)
+
+sg = SocialGraph()
+sg.populate_graph(1000, 5)
+# print(sg.friendships)
+connections = sg.get_all_social_paths(1)
+
+# calculate percentage of other users in a particular user's extended social network
+
+
+def calc_network_percentage(graph, user_connections, num_users):
+    count = 0
+    for user in graph.users:
+        if user in user_connections.keys():
+            count += 1
+    percentage = (count / num_users) * 100
+    return percentage
+
+
+print(calc_network_percentage(sg, connections, 1000))  # 99.1
+
+
+def calc_avg_degree_separtation(graph, user_connections):
+    degrees = 0
+    friend_count = 0
+    # length of users path to another user is the degree of separation
+    for user in user_connections:
+        # add degree of separation
+        degrees += len(user_connections[user])
+        # add to firend count
+        count += 1
+    # divide total degrees of separation by the number of user connections
+    average = degrees / friend_count
+    return average
+
+
+print(calc_avg_degree_separtation(sg, connections))

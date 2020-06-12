@@ -1,6 +1,6 @@
 """
-Simple graph implementation
-"""
+   Simple graph implementation
+   """
 from util import Stack, Queue  # These may come in handy
 
 
